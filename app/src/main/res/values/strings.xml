@@ -3,48 +3,48 @@
     <string name="zero_start">0</string>
 
     <string-array name="tags">
-        <string>btn0</string>
-        <string>btn1</string>
-        <string>btn2</string>
-        <string>btn3</string>
-        <string>btn4</string>
-        <string>btn5</string>
-        <string>btn6</string>
-        <string>btn7</string>
-        <string>btn8</string>
-        <string>btn9</string>
-        <string>btnNegate</string>
-        <string>btnDot</string>
-        <string>btnSqrt</string>
-        <string>btnClear</string>
-        <string>btnDivide</string>
-        <string>btnPercent</string>
-        <string>btnMultiply</string>
-        <string>btnMinus</string>
-        <string>btnPlus</string>
-        <string>btnEqual</string>
+        <item>btn7</item>
+        <item>btn8</item>
+        <item>btn9</item>
+        <item>btnSqrt</item>
+        <item>btnClear</item>
+        <item>btn4</item>
+        <item>btn5</item>
+        <item>btn6</item>
+        <item>btnDivide</item>
+        <item>btnPercent</item>
+        <item>btn1</item>
+        <item>btn2</item>
+        <item>btn3</item>
+        <item>btnMultiply</item>
+        <item>btnMinus</item>
+        <item>btnNegate</item>
+        <item>btn0</item>
+        <item>btnDot</item>
+        <item>btnPlus</item>
+        <item>btnEqual</item>
     </string-array>
 
     <string-array name="text">
-        <string name="btn0">0</string>
-        <string name="btn1">1</string>
-        <string name="btn2">2</string>
-        <string name="btn3">3</string>
-        <string name="btn4">4</string>
-        <string name="btn5">5</string>
-        <string name="btn6">6</string>
-        <string name="btn7">7</string>
-        <string name="btn8">8</string>
-        <string name="btn9">9</string>
-        <string name="btnNegate">\u00B1</string>
-        <string name="btnDot">.</string>
-        <string name="btnSqrt">\u221A</string>
-        <string name="btnClear">C</string>
-        <string name="btnDivide">\u00F7</string>
-        <string name="btnPercent">%</string>
-        <string name="btnMultiply">\u00D7</string>
-        <string name="btnMinus">-</string>
-        <string name="btnPlus">+</string>
-        <string name="btnEqual">=</string>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>\u221A</item>
+        <item>C</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>\u00F7</item>
+        <item>%</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>\u00D7</item>
+        <item>-</item>
+        <item>\u00B1</item>
+        <item>0</item>
+        <item>.</item>
+        <item>+</item>
+        <item>=</item>
     </string-array>
 </resources>
