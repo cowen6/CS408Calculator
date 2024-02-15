@@ -5,6 +5,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -12,15 +13,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.beans.PropertyChangeEvent;
+
 import edu.jsu.mcis.cs408.calculator.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements AbstractView {
 
+    public static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
     private final int KEYS_HEIGHT = 4;
     private final int KEYS_WIDTH = 5;
     private String[] tags;
     private String[] text;
+    private DefaultController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,21 +40,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initLayout();
 
+        /* Create Controller and Model */
 
+        controller = new DefaultController();
+        DefaultModel model = new DefaultModel();
+
+        /* Register Activity View and Model with Controller */
+
+        controller.addView(this);
+        controller.addModel(model);
+
+        /* Initialize Model to Default Values */
+
+        model.initDefault();
 
     }
 
-    //Creates and shows a toast with the tag of the button pressed
     @Override
-    public void onClick(View view) {
-        Toast.makeText(binding.getRoot().getContext(), view.getTag().toString(), Toast.LENGTH_SHORT).show();
+    public void modelPropertyChange(final PropertyChangeEvent evt) {
+
+        /*
+         * This method is called by the "propertyChange()" method of AbstractController
+         * when a change is made to an element of a Model.  It identifies the element that
+         * was changed and updates the View accordingly.
+         */
+
+        String propertyName = evt.getPropertyName();
+        String propertyValue = evt.getNewValue().toString();
+
+        Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValue);
+        /*
+        if ( propertyName.equals(DefaultController.ELEMENT_TEXT1_PROPERTY) ) {
+
+            String oldPropertyValue = binding.outputText1.getText().toString();
+
+            if ( !oldPropertyValue.equals(propertyValue) ) {
+                binding.outputText1.setText(propertyValue);
+            }
+
+        }
+
+        else if ( propertyName.equals(DefaultController.ELEMENT_TEXT2_PROPERTY) ) {
+
+            String oldPropertyValue = binding.outputText2.getText().toString();
+
+            if ( !oldPropertyValue.equals(propertyValue) ) {
+                binding.outputText2.setText(propertyValue);
+            }
+
+        }
+         */
+
+    }
+
+    public enum CalculatorState {
+        CLEAR, LHS, OP_SELECTED, RHS, RESULT, ERROR
+    }
+
+    public enum Operator {
+        PLUS, MINUS, MULTIPLY, DIVIDE, NEGATE, SQRT, PERCENT
+    }
+
+    //Creates and shows a toast with the tag of the button pressed
+    class CalculatorClickHandler implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            String tag = view.getTag().toString();
+            Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
+            toast.show();
+            // INSERT EVENT HANDLING CODE HERE
+        }
+
     }
 
     private void initLayout() {
         ConstraintLayout layout = binding.layout;
-        /*  !!!!!!!!!!  LOOK UP HELP FOR ARRAYS OF ARRAYS   !!!!!!!!!!  */
         int[][] horizontals = new int[KEYS_HEIGHT][KEYS_WIDTH];
         int[][] verticals = new int[KEYS_WIDTH][KEYS_HEIGHT];
+        CalculatorClickHandler click = new CalculatorClickHandler();
 
         //Get ids for all guidelines
         int north = binding.guideNorth.getId();
@@ -83,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btn.setTag(tags[btnnum]);
                 btn.setText(text[btnnum]);
                 btn.setTextSize(24);
-                btn.setOnClickListener(this);
+                btn.setOnClickListener(click);
                 layout.addView(btn);
                 horizontals[i][j] = id;
                 verticals[j][i] = id;
