@@ -2,6 +2,8 @@ package edu.jsu.mcis.cs408.calculator;
 
 import android.util.Log;
 
+import java.math.BigDecimal;
+
 //  !!!!!!!!!! UPDATE COMMENTS TO REFLECT THIS PROJECT !!!!!!!!!!
 
 public class DefaultModel extends AbstractModel {
@@ -14,10 +16,18 @@ public class DefaultModel extends AbstractModel {
      * reflected in the View as an EditText field and a TextView label.
      */
 
-    // !!!!!!!!!! CHANGE/ADD VARIABLES TO REFLECT THIS PROJECT !!!!!!!!!!
-    //USE BigDecimal types, rather than float or double
     private String text1;
     private String text2;
+
+    // !!!!!!!!!! CHANGE/ADD VARIABLES TO REFLECT THIS PROJECT !!!!!!!!!!
+    //USE BigDecimal types, rather than float or double
+    private MainActivity.CalculatorState state;
+    private BigDecimal lhs;
+    private BigDecimal rhs;
+    private MainActivity.Operator op;
+    // Do I need to include string builder here or within methods?
+    private StringBuilder buffer;
+
 
     /*
      * Initialize the model elements to known default values.  We use the setter

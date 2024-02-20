@@ -2,6 +2,8 @@ package edu.jsu.mcis.cs408.calculator;
 
 //  !!!!!!!!!! UPDATE COMMENTS TO REFLECT THIS PROJECT !!!!!!!!!!
 
+import java.math.BigDecimal;
+
 public class DefaultController extends AbstractController
 {
 
@@ -13,12 +15,14 @@ public class DefaultController extends AbstractController
      * be reflected in the Model.
      */
 
-    // !!!!!!!!!! CHANGE/ADD VARIABLES/CONSTANTS TO REFLECT THIS PROJECT !!!!!!!!!!
-    //Use BigDecimal types, rather than float or double
     public static final String ELEMENT_TEXT1_PROPERTY = "Text1";
     public static final String ELEMENT_TEXT2_PROPERTY = "Text2";
-
-    // !!!!!!!!!! CHANGE/ADD METHODS TO REFLECT NEW VARIABLE/CONSTANTS !!!!!!!!!!
+    // !!!!!!!!!! CHANGE/ADD VARIABLES/CONSTANTS TO REFLECT THIS PROJECT !!!!!!!!!!
+    //Use BigDecimal types, rather than float or double
+    public static final String ELEMENT_STATE_PROPERTY = "State";
+    public static final String ELEMENT_LHS_PROPERTY = "LHS";
+    public static final String ELEMENT_RHS_PROPERTY = "RHS";
+    public static final String ELEMENT_OP_PROPERTY = "OP";
 
     /*
      * This is the change method which corresponds to ELEMENT_TEXT1_PROPERTY.
@@ -37,6 +41,24 @@ public class DefaultController extends AbstractController
 
     public void changeElementText2(String newText) {
         setModelProperty(ELEMENT_TEXT2_PROPERTY, newText);
+    }
+
+    // !!!!!!!!!! CHANGE/ADD METHODS TO REFLECT NEW VARIABLE/CONSTANTS !!!!!!!!!!
+
+    public void changeElementState(MainActivity.CalculatorState state) {
+        setModelProperty(ELEMENT_STATE_PROPERTY, state);
+    }
+
+    public void changeElementLHS(BigDecimal lhs) {
+        setModelProperty(ELEMENT_LHS_PROPERTY, lhs);
+    }
+
+    public void changeElementRHS(BigDecimal rhs) {
+        setModelProperty(ELEMENT_RHS_PROPERTY, rhs);
+    }
+
+    public void changeElementOP(MainActivity.Operator op) {
+        setModelProperty(ELEMENT_OP_PROPERTY, op);
     }
 
 }

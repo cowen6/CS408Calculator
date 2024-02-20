@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             String tag = view.getTag().toString();
             Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
             toast.show();
+
             // INSERT EVENT HANDLING CODE HERE
         }
 
