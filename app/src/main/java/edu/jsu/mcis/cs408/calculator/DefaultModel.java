@@ -4,8 +4,6 @@ import android.util.Log;
 
 import java.math.BigDecimal;
 
-//  !!!!!!!!!! UPDATE COMMENTS TO REFLECT THIS PROJECT !!!!!!!!!!
-
 public class DefaultModel extends AbstractModel {
 
     public static final String TAG = "DefaultModel";
@@ -19,21 +17,26 @@ public class DefaultModel extends AbstractModel {
     private String text1;
     private String text2;
 
-    // !!!!!!!!!! CHANGE/ADD VARIABLES TO REFLECT THIS PROJECT !!!!!!!!!!
-    //USE BigDecimal types, rather than float or double
+    /*
+     * This is a simple implementation of an AbstractModel which encapsulates
+     * two number fields(lhs and rhs), a calculator state property(state),
+     * an operator property(op), and a string buffer which (in this example)
+     * are reflected in the View as BigDecimals, state enums, or a StringBuilder.
+     */
+
     private MainActivity.CalculatorState state;
     private BigDecimal lhs;
     private BigDecimal rhs;
     private MainActivity.Operator op;
     // Do I need to include string builder here or within methods?
-    private StringBuilder buffer;
+    private StringBuilder buffer; //newdigit????
 
 
     /*
-     * Initialize the model elements to known default values.  We use the setter
-     * methods instead of changing the values directly so that these changes are
-     * properly announced to the Controller, and so that the Views can be updated
-     * accordingly.
+     * Initialize the model elements to either known default values, or restore
+     * from a previous state.  We use the setter methods instead of changing the
+     * values directly so that these changes are properly announced to the
+     * Controller, and so that the Views can be updated accordingly.
      */
 
     //
@@ -47,7 +50,7 @@ public class DefaultModel extends AbstractModel {
     // !!!!!!!!!! CHANGE/ADD METHODS TO REFLECT NEW VARIABLE/CONSTANTS !!!!!!!!!!
 
     /*
-     * Simple getter methods for text1 and text2
+     * Simple getter methods
      */
 
     public String getText1() {
