@@ -69,27 +69,37 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
         String propertyValue = evt.getNewValue().toString();
 
         Log.i(TAG, "New " + propertyName + " Value from Model: " + propertyValue);
-        /*
-        if ( propertyName.equals(DefaultController.ELEMENT_TEXT1_PROPERTY) ) {
 
-            String oldPropertyValue = binding.outputText1.getText().toString();
+        if ( propertyName.equals(DefaultController.ELEMENT_LHS) ) {
+
+            String oldPropertyValue = binding.textOutput.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.outputText1.setText(propertyValue);
+                binding.textOutput.setText(propertyValue);
             }
 
         }
 
-        else if ( propertyName.equals(DefaultController.ELEMENT_TEXT2_PROPERTY) ) {
+        else if ( propertyName.equals(DefaultController.ELEMENT_RHS) ) {
 
-            String oldPropertyValue = binding.outputText2.getText().toString();
+            String oldPropertyValue = binding.textOutput.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.outputText2.setText(propertyValue);
+                binding.textOutput.setText(propertyValue);
             }
 
         }
-         */
+
+        else if ( propertyName.equals(DefaultController.ELEMENT_RESULT) ) {
+
+            String oldPropertyValue = binding.textOutput.getText().toString();
+
+            if ( !oldPropertyValue.equals(propertyValue) ) {
+                binding.textOutput.setText(propertyValue);
+            }
+
+        }
+
 
     }
 
@@ -98,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
     }
 
     public enum Operator {
-        PLUS, MINUS, MULTIPLY, DIVIDE, NEGATE, SQRT, PERCENT
+        NONE, PLUS, MINUS, MULTIPLY, DIVIDE, NEGATE, SQRT, PERCENT
     }
 
     //Creates and shows a toast with the tag of the button pressed

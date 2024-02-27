@@ -13,33 +13,12 @@ public class DefaultController extends AbstractController
      * be reflected in the Model.
      */
 
-    public static final String ELEMENT_TEXT1_PROPERTY = "Text1";
-    public static final String ELEMENT_TEXT2_PROPERTY = "Text2";
-    // !!!!!!!!!! CHANGE/ADD VARIABLES/CONSTANTS TO REFLECT THIS PROJECT !!!!!!!!!!
     public static final String ELEMENT_STATE = "State";
-    public static final String ELEMENT_LHS = "LHS";
-    public static final String ELEMENT_RHS = "RHS";
-    public static final String ELEMENT_OP = "OP";
-    public static final String ELEMENT_NEW_DIGIT ="NewDigit"; //?????
-
-    /*
-     * This is the change method which corresponds to ELEMENT_TEXT1_PROPERTY.
-     * It receives the new data for the Model, and invokes "setModelProperty()"
-     * (inherited from AbstractController) so that the proper Model can be found
-     * and updated properly.
-     */
-
-    public void changeElementText1(String newText) {
-        setModelProperty(ELEMENT_TEXT1_PROPERTY, newText);
-    }
-
-    /*
-     * This is the change method which corresponds to ELEMENT_TEXT2_PROPERTY.
-     */
-
-    public void changeElementText2(String newText) {
-        setModelProperty(ELEMENT_TEXT2_PROPERTY, newText);
-    }
+    public static final String ELEMENT_LHS = "Lhs";
+    public static final String ELEMENT_RHS = "Rhs";
+    public static final String ELEMENT_OP = "Op";
+    public static final String ELEMENT_BUFFER ="Buffer";
+    public static final String ELEMENT_RESULT ="Result";
 
     /*
      * These are the change methods which correspond to the element properties.
@@ -48,9 +27,7 @@ public class DefaultController extends AbstractController
      * and updated properly.
      */
 
-    public void changeElementState(MainActivity.CalculatorState state) {
-        setModelProperty(ELEMENT_STATE, state);
-    }
+    public void changeElementState(MainActivity.CalculatorState state) { setModelProperty(ELEMENT_STATE, state); }
 
     public void changeElementLHS(BigDecimal lhs) {
         setModelProperty(ELEMENT_LHS, lhs);
@@ -63,5 +40,9 @@ public class DefaultController extends AbstractController
     public void changeElementOP(MainActivity.Operator op) {
         setModelProperty(ELEMENT_OP, op);
     }
+
+    public void changeElementBuffer(StringBuilder digit) { setModelProperty(ELEMENT_BUFFER, digit); }
+
+    public void changeElementResult(BigDecimal result) { setModelProperty(ELEMENT_RESULT, result); }
 
 }
