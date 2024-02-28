@@ -72,30 +72,33 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
 
         if ( propertyName.equals(DefaultController.ELEMENT_LHS) ) {
 
-            String oldPropertyValue = binding.textOutput.getText().toString();
+            TextView output = binding.layout.findViewWithTag("textOutput");
+            String oldPropertyValue = output.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.textOutput.setText(propertyValue);
+                output.setText(propertyValue);
             }
 
         }
 
         else if ( propertyName.equals(DefaultController.ELEMENT_RHS) ) {
 
-            String oldPropertyValue = binding.textOutput.getText().toString();
+            TextView output = binding.layout.findViewWithTag("textOutput");
+            String oldPropertyValue = output.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.textOutput.setText(propertyValue);
+                output.setText(propertyValue);
             }
 
         }
 
         else if ( propertyName.equals(DefaultController.ELEMENT_RESULT) ) {
 
-            String oldPropertyValue = binding.textOutput.getText().toString();
+            TextView output = binding.layout.findViewWithTag("textOutput");
+            String oldPropertyValue = output.getText().toString();
 
             if ( !oldPropertyValue.equals(propertyValue) ) {
-                binding.textOutput.setText(propertyValue);
+                output.setText(propertyValue);
             }
 
         }
@@ -120,7 +123,104 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
             toast.show();
 
+            /* Implement algorithm to determine action here or in model
+            *
+            * Model would need to call other methods from within
+            * (If number or dot, call change buffer to add digit
+            *   add to either lhs or rhs
+            *   (would check if dot is already contained if adding dot)
+            * else if operator, call change operator
+            *   may call equal if negate or sqrt
+            *   may change rhs if percent (does nothing if lhs)
+            * else if equal or clear, call change state
+            *   clear resets calculator, clearing all elements via init default?
+            *   equal calculates equation, calculates equation via result?)
+            *
+            * All operations depend on the calculator state and may change the state
+            */
+
+            StringBuilder digit;
+
             // INSERT EVENT HANDLING CODE HERE
+            switch (tag) {
+                //button is an operator button
+                case "btnPlus":
+                    controller.changeElementOP(Operator.PLUS);
+                    break;
+                case "btnMinus":
+                    controller.changeElementOP(Operator.MINUS);
+                    break;
+                case "btnMultiply":
+                    controller.changeElementOP(Operator.MULTIPLY);
+                    break;
+                case "btnDivide":
+                    controller.changeElementOP(Operator.DIVIDE);
+                    break;
+                case "btnNegate":
+                    controller.changeElementOP(Operator.NEGATE);
+                    break;
+                case "btnSqrt":
+                    controller.changeElementOP(Operator.SQRT);
+                    break;
+                case "btnPercent":
+                    controller.changeElementOP(Operator.PERCENT);
+                    break;
+
+                //button is either the clear or equal button
+                case "btnClear":
+                    controller.changeElementState(CalculatorState.CLEAR);
+                    break;
+                case "btnEqual":
+                    controller.changeElementState(CalculatorState.RESULT);
+                    break;
+
+                //Button is a number button or the Dot button
+                case "btn0":
+                    digit = new StringBuilder("0");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn1":
+                    digit = new StringBuilder("1");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn2":
+                    digit = new StringBuilder("2");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn3":
+                    digit = new StringBuilder("3");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn4":
+                    digit = new StringBuilder("4");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn5":
+                    digit = new StringBuilder("5");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn6":
+                    digit = new StringBuilder("6");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn7":
+                    digit = new StringBuilder("7");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn8":
+                    digit = new StringBuilder("8");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btn9":
+                    digit = new StringBuilder("9");
+                    controller.changeElementBuffer(digit);
+                    break;
+                case "btnDot":
+                    digit = new StringBuilder(".");
+                    controller.changeElementBuffer(digit);
+                    break;
+
+            }
         }
 
     }

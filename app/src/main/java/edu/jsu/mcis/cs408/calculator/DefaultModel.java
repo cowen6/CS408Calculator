@@ -39,7 +39,7 @@ public class DefaultModel extends AbstractModel {
         setLhs(new BigDecimal("0"));
         setRhs(new BigDecimal("0"));
         setBuffer(new StringBuilder());
-
+        setResult(new BigDecimal("0"));
 
     }
 
@@ -60,6 +60,22 @@ public class DefaultModel extends AbstractModel {
      * connected to physical elements in the views. Any registered AbstractController
      * subclasses will receive this event, and will propagate it to all registered
      * Views so that they can update themselves accordingly.
+     */
+
+    /* Implement algorithm to determine action here or in activity
+     *
+     * Model would need to call other methods from within
+     * (If number or dot, call change buffer to add digit
+     *   add to either lhs or rhs
+     *   (would check if dot is already contained if adding dot)
+     * else if operator, call change operator
+     *   may call equal if negate or sqrt
+     *   may change rhs if percent (does nothing if lhs)
+     * else if equal or clear, call change state
+     *   clear resets calculator, clearing all elements via init default?
+     *   equal calculates equation, calculates equation via result?)
+     *
+     * All operations depend on the calculator state and may change the state
      */
 
     public void setState(MainActivity.CalculatorState newState) {
