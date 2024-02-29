@@ -85,22 +85,103 @@ public class DefaultModel extends AbstractModel {
 
         Log.i(TAG, "Calculator State Change: From " + oldState + " to " + newState);
 
+        switch (state) {
+            case CLEAR:
+                this.op = MainActivity.Operator.NONE;
+                setLhs(new BigDecimal("0"));
+                this.rhs = new BigDecimal("0");
+                this.buffer = new StringBuilder();
+                this.result = new BigDecimal("0");
+                break;
+            case RESULT:
+                //calculate result
+                break;
+            default:
+                Log.i(TAG, "Called setState on state other than CLEAR or RESULT");
+                break;
+        }
+
         //firePropertyChange(DefaultController.ELEMENT_STATE, oldState, newState);
 
     }
 
     public void setOp(MainActivity.Operator newOp) {
 
-        MainActivity.Operator oldOp = this.op;
-        this.op = newOp;
+        switch (state) {
+            case LHS: case CLEAR: case RESULT:
 
-        Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
+                if (newOp == MainActivity.Operator.NEGATE) {
+                    BigDecimal negated = this.lhs.negate();
+                    Log.i(TAG, "Negating LHS");
+                    setLhs(negated);
+                } else if (newOp == MainActivity.Operator.SQRT) {
+                    //BigDecimal rooted = this.lhs;
+                    Log.i(TAG, "Square Rooting LHS");
+                    //setLhs(rooted);
+                } else if (newOp == MainActivity.Operator.PERCENT) {
+                    Log.i(TAG, "Cannot find percent without second number");
+                }
+                else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
+                    MainActivity.Operator oldOp = this.op;
+                    this.op = newOp;
+                    Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
+                    this.state = MainActivity.CalculatorState.OP_SELECTED;
+                }
+                break;
+            case OP_SELECTED:
+                //RHS changes to number even after negate, sqrt or percent
+                if (newOp == MainActivity.Operator.NEGATE) {
+                    BigDecimal negated = this.rhs.negate();
+                    Log.i(TAG, "Negating RHS");
+                    setRhs(negated);
+                } else if (newOp == MainActivity.Operator.SQRT) {
+                    //BigDecimal rooted = this.rhs;
+                    Log.i(TAG, "Square Rooting RHS");
+                    //setRhs(rooted);
+                } else if (newOp == MainActivity.Operator.PERCENT) {
+                    BigDecimal percent = this.rhs.divide(this.lhs);
+                    Log.i(TAG,"Percenting RHS");
+                    setRhs(percent);
+                }
+                else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
+                    MainActivity.Operator oldOp = this.op;
+                    this.op = newOp;
+                    Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
+                }
+                break;
+            case RHS:
 
-        //firePropertyChange(DefaultController.ELEMENT_OP, oldOp, newOp);
+                if (newOp == MainActivity.Operator.NEGATE) {
+                    BigDecimal negated = this.rhs.negate();
+                    Log.i(TAG, "Negating RHS");
+                    setRhs(negated);
+                } else if (newOp == MainActivity.Operator.SQRT) {
+                    //BigDecimal rooted = this.rhs;
+                    Log.i(TAG, "Square Rooting RHS");
+                    //setRhs(rooted);
+                } else if (newOp == MainActivity.Operator.PERCENT) {
+                    BigDecimal percent = this.rhs.divide(this.lhs);
+                    Log.i(TAG,"Percenting RHS");
+                    setRhs(percent);
+                }
+                else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
+                    //call for result, set lhs to result, and set op !!!!!!!!!!!!!!!!!!!!!
+                    MainActivity.Operator oldOp = this.op;
+                    this.op = newOp;
+                    Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
+                    this.state = MainActivity.CalculatorState.OP_SELECTED;
+                }
+                break;
+            default: //error case, should not be able to click
+                Log.i(TAG,"Cannot choose an operator after getting error");
+
+        }
 
     }
 
     public void setLhs(BigDecimal newLhs) {
+
+        //Cannot be longer than what would fit on the screen (~12 char?)
 
         BigDecimal oldLhs = this.lhs;
         this.lhs = newLhs;
@@ -113,6 +194,8 @@ public class DefaultModel extends AbstractModel {
 
     public void setRhs(BigDecimal newRhs) {
 
+        //Cannot be longer than what would fit on the screen (~12 char?)
+
         BigDecimal oldRhs = this.rhs;
         this.rhs = newRhs;
 
@@ -124,11 +207,55 @@ public class DefaultModel extends AbstractModel {
 
     public void setBuffer(StringBuilder newDigit) {
 
-        StringBuilder oldDigit = this.buffer;
-        this.buffer = newDigit;
+        switch (this.state) {
+            case CLEAR: case ERROR: case RESULT:
+                this.state = MainActivity.CalculatorState.LHS;
+            case LHS:
+                StringBuilder oldlhs = new StringBuilder(this.lhs.toString());
+                StringBuilder newlhs = new StringBuilder(oldlhs);
 
-        Log.i(TAG, "Buffer Change: From " + oldDigit + " to " + newDigit);
+                if (newDigit.toString() == ".") { //if adding dot
+                    boolean dot = oldlhs.toString().contains(".");
 
+                    if (dot) {//check if oldlhs already has dot
+                        Log.i(TAG, "Cannot add multiple dots");
+                    }
+                    else {//lhs doesn't have a dot yet
+                        newlhs.append(newDigit);
+                        setLhs(new BigDecimal(newlhs.toString()));
+                    }
+                }
+                else { //adding number
+                    newlhs.append(newDigit);
+                    setLhs(new BigDecimal(newlhs.toString()));
+                }
+
+                break;
+            case OP_SELECTED:
+                this.state = MainActivity.CalculatorState.RHS;
+                this.rhs = new BigDecimal("0"); //resets in case of negate, sqrt, or percent
+            case RHS:
+                StringBuilder oldrhs = new StringBuilder(this.rhs.toString());
+                StringBuilder newrhs = new StringBuilder(oldrhs);
+
+                if (newDigit.toString() == ".") { //if adding dot
+                    boolean dot = oldrhs.toString().contains(".");
+
+                    if (dot) {//check if oldrhs already has dot
+                        Log.i(TAG, "Cannot add multiple dots");
+                    }
+                    else {//lhs doesn't have a dot yet
+                        newrhs.append(newDigit);
+                        setRhs(new BigDecimal(newrhs.toString()));
+                    }
+                }
+                else { //adding number
+                    newrhs.append(newDigit);
+                    setRhs(new BigDecimal(newrhs.toString()));
+                }
+                break;
+        }
+        
         //firePropertyChange(DefaultController.ELEMENT_BUFFER, oldDigit, newDigit);
 
     }
