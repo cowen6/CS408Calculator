@@ -95,6 +95,7 @@ public class DefaultModel extends AbstractModel {
                 break;
             case RESULT:
                 //calculate result
+                //should only have to worry about PLUS, MINUS, MULTIPLY, or DIVIDE
                 break;
             default:
                 Log.i(TAG, "Called setState on state other than CLEAR or RESULT");
@@ -115,9 +116,9 @@ public class DefaultModel extends AbstractModel {
                     Log.i(TAG, "Negating LHS");
                     setLhs(negated);
                 } else if (newOp == MainActivity.Operator.SQRT) {
-                    //BigDecimal rooted = this.lhs;
+                    double rooted = Math.sqrt(this.lhs.doubleValue());
                     Log.i(TAG, "Square Rooting LHS");
-                    //setLhs(rooted);
+                    setLhs(new BigDecimal(rooted));
                 } else if (newOp == MainActivity.Operator.PERCENT) {
                     Log.i(TAG, "Cannot find percent without second number");
                 }
@@ -131,17 +132,22 @@ public class DefaultModel extends AbstractModel {
             case OP_SELECTED:
                 //RHS changes to number even after negate, sqrt or percent
                 if (newOp == MainActivity.Operator.NEGATE) {
+                    this.rhs = this.lhs;
                     BigDecimal negated = this.rhs.negate();
                     Log.i(TAG, "Negating RHS");
                     setRhs(negated);
                 } else if (newOp == MainActivity.Operator.SQRT) {
-                    //BigDecimal rooted = this.rhs;
+                    this.rhs = this.lhs;
+                    double rooted = Math.sqrt(this.rhs.doubleValue());
                     Log.i(TAG, "Square Rooting RHS");
-                    //setRhs(rooted);
+                    setRhs(new BigDecimal(rooted));
                 } else if (newOp == MainActivity.Operator.PERCENT) {
-                    BigDecimal percent = this.rhs.divide(this.lhs);
+                    this.rhs = this.lhs;
+                    BigDecimal divide = new BigDecimal("100");
+                    BigDecimal percent = this.rhs.divide(divide);
+                    BigDecimal newrhs = this.lhs.multiply(percent);
                     Log.i(TAG,"Percenting RHS");
-                    setRhs(percent);
+                    setRhs(newrhs);
                 }
                 else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
                     MainActivity.Operator oldOp = this.op;
@@ -156,20 +162,26 @@ public class DefaultModel extends AbstractModel {
                     Log.i(TAG, "Negating RHS");
                     setRhs(negated);
                 } else if (newOp == MainActivity.Operator.SQRT) {
-                    //BigDecimal rooted = this.rhs;
+                    double rooted = Math.sqrt(this.rhs.doubleValue());
                     Log.i(TAG, "Square Rooting RHS");
-                    //setRhs(rooted);
+                    setRhs(new BigDecimal(rooted));
                 } else if (newOp == MainActivity.Operator.PERCENT) {
-                    BigDecimal percent = this.rhs.divide(this.lhs);
+                    BigDecimal divide = new BigDecimal("100");
+                    BigDecimal percent = this.rhs.divide(divide);
+                    BigDecimal newrhs = this.lhs.multiply(percent);
                     Log.i(TAG,"Percenting RHS");
-                    setRhs(percent);
+                    setRhs(newrhs);
                 }
                 else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
                     //call for result, set lhs to result, and set op !!!!!!!!!!!!!!!!!!!!!
-                    MainActivity.Operator oldOp = this.op;
-                    this.op = newOp;
-                    Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
-                    this.state = MainActivity.CalculatorState.OP_SELECTED;
+                    //setState(MainActivity.CalculatorState.RESULT);
+                    //if (this.state != MainActivity.CalculatorState.ERROR) {
+                        //this.lhs = this.result;
+                        MainActivity.Operator oldOp = this.op;
+                        this.op = newOp;
+                        Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
+                        this.state = MainActivity.CalculatorState.OP_SELECTED;
+                    //}
                 }
                 break;
             default: //error case, should not be able to click
@@ -261,6 +273,8 @@ public class DefaultModel extends AbstractModel {
     }
 
     public void setResult(BigDecimal newResult) {
+
+        //should only have to worry about PLUS, MINUS, MULTIPLY, or DIVIDE
 
         BigDecimal oldResult = this.result;
         this.result = newResult;
