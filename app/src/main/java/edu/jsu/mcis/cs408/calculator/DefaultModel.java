@@ -40,6 +40,7 @@ public class DefaultModel extends AbstractModel {
         setRhs(new BigDecimal("0"));
         setBuffer(new StringBuilder());
         setResult(new BigDecimal("0"));
+        setState(MainActivity.CalculatorState.CLEAR);
 
     }
 
@@ -62,9 +63,7 @@ public class DefaultModel extends AbstractModel {
      * Views so that they can update themselves accordingly.
      */
 
-    /* Implement algorithm to determine action here or in activity
-     *
-     * Model would need to call other methods from within
+    /* Model would need to call other methods from within
      * (If number or dot, call change buffer to add digit
      *   add to either lhs or rhs
      *   (would check if dot is already contained if adding dot)
@@ -85,20 +84,49 @@ public class DefaultModel extends AbstractModel {
 
         Log.i(TAG, "Calculator State Change: From " + oldState + " to " + newState);
 
+        if (oldState == MainActivity.CalculatorState.RESULT) {
+            this.lhs = this.result;
+        }
+
         switch (state) {
             case CLEAR:
                 this.op = MainActivity.Operator.NONE;
                 setLhs(new BigDecimal("0"));
-                this.rhs = new BigDecimal("0");
+                setRhs(new BigDecimal("0"));
                 this.buffer = new StringBuilder();
-                this.result = new BigDecimal("0");
+                setResult(new BigDecimal("0"));
                 break;
+            case OP_SELECTED:
+                this.rhs = this.lhs;
             case RESULT:
-                //calculate result
-                //should only have to worry about PLUS, MINUS, MULTIPLY, or DIVIDE
+                if (this.op == MainActivity.Operator.DIVIDE && this.rhs.equals(0)) {
+                    Log.i(TAG, "Cannot divide by Zero");
+                    setResult(new BigDecimal("0"));
+                    this.state = MainActivity.CalculatorState.ERROR;
+                }
+                else {
+                    switch (this.op) {
+                        case PLUS:
+                            setResult(this.lhs.add(this.rhs));
+                            break;
+                        case MINUS:
+                            setResult(this.lhs.subtract(this.rhs));
+                            break;
+                        case MULTIPLY:
+                            setResult(this.lhs.multiply(this.rhs));
+                            break;
+                        case DIVIDE:
+                            setResult(this.lhs.divide(this.rhs));
+                            break;
+                        default:
+                            Log.i(TAG, "Problem calculating result");
+                            this.state = MainActivity.CalculatorState.ERROR;
+                            break;
+                    }
+                }
                 break;
             default:
-                Log.i(TAG, "Called setState on state other than CLEAR or RESULT");
+                Log.i(TAG, "Called setState on state other than CLEAR, OP_SELECTED, or RESULT");
                 break;
         }
 
@@ -109,7 +137,9 @@ public class DefaultModel extends AbstractModel {
     public void setOp(MainActivity.Operator newOp) {
 
         switch (state) {
-            case LHS: case CLEAR: case RESULT:
+            case RESULT:
+                this.lhs = this.result;
+            case LHS: case CLEAR:
 
                 if (newOp == MainActivity.Operator.NEGATE) {
                     BigDecimal negated = this.lhs.negate();
@@ -174,14 +204,14 @@ public class DefaultModel extends AbstractModel {
                 }
                 else { //button is PLUS, MINUS, MULTIPLY, or DIVIDE
                     //call for result, set lhs to result, and set op !!!!!!!!!!!!!!!!!!!!!
-                    //setState(MainActivity.CalculatorState.RESULT);
-                    //if (this.state != MainActivity.CalculatorState.ERROR) {
-                        //this.lhs = this.result;
+                    setState(MainActivity.CalculatorState.RESULT);
+                    if (this.state != MainActivity.CalculatorState.ERROR) {
+                        this.lhs = this.result;
                         MainActivity.Operator oldOp = this.op;
                         this.op = newOp;
                         Log.i(TAG, "Operator Change: From " + oldOp + " to " + newOp);
                         this.state = MainActivity.CalculatorState.OP_SELECTED;
-                    //}
+                    }
                 }
                 break;
             default: //error case, should not be able to click
@@ -193,27 +223,53 @@ public class DefaultModel extends AbstractModel {
 
     public void setLhs(BigDecimal newLhs) {
 
-        //Cannot be longer than what would fit on the screen (~12 char?)
+        if (newLhs.toString().contains(".")) {
+            if (newLhs.toString().length() <= 13) {
+                BigDecimal oldLhs = this.lhs;
+                this.lhs = newLhs;
 
-        BigDecimal oldLhs = this.lhs;
-        this.lhs = newLhs;
+                Log.i(TAG, "LHS Change: From " + oldLhs + " to " + newLhs);
 
-        Log.i(TAG, "LHS Change: From " + oldLhs + " to " + newLhs);
+                firePropertyChange(DefaultController.ELEMENT_LHS, oldLhs, newLhs);
+            }
+        }
+        else if (newLhs.toString().length() <= 12) {
+            BigDecimal oldLhs = this.lhs;
+            this.lhs = newLhs;
 
-        firePropertyChange(DefaultController.ELEMENT_LHS, oldLhs, newLhs);
+            Log.i(TAG, "LHS Change: From " + oldLhs + " to " + newLhs);
+
+            firePropertyChange(DefaultController.ELEMENT_LHS, oldLhs, newLhs);
+        }
+        else {
+            Log.i(TAG, "Cannot enter LHS with more than 12 digits and a dot");
+        }
 
     }
 
     public void setRhs(BigDecimal newRhs) {
 
-        //Cannot be longer than what would fit on the screen (~12 char?)
+        if (newRhs.toString().contains(".")) {
+            if (newRhs.toString().length() <= 13) {
+                BigDecimal oldRhs = this.rhs;
+                this.rhs = newRhs;
 
-        BigDecimal oldRhs = this.rhs;
-        this.rhs = newRhs;
+                Log.i(TAG, "RHS Change: From " + oldRhs + " to " + newRhs);
 
-        Log.i(TAG, "RHS Change: From " + oldRhs + " to " + newRhs);
+                firePropertyChange(DefaultController.ELEMENT_RHS, oldRhs, newRhs);
+            }
+        }
+        else if (newRhs.toString().length() <= 12) {
+            BigDecimal oldRhs = this.rhs;
+            this.rhs = newRhs;
 
-        firePropertyChange(DefaultController.ELEMENT_RHS, oldRhs, newRhs);
+            Log.i(TAG, "RHS Change: From " + oldRhs + " to " + newRhs);
+
+            firePropertyChange(DefaultController.ELEMENT_RHS, oldRhs, newRhs);
+        }
+        else {
+            Log.i(TAG, "Cannot enter RHS with more than 12 digits and a dot");
+        }
 
     }
 
@@ -221,7 +277,9 @@ public class DefaultModel extends AbstractModel {
 
         switch (this.state) {
             case CLEAR: case ERROR: case RESULT:
+                Log.i(TAG, "Starting fresh");
                 this.state = MainActivity.CalculatorState.LHS;
+                this.lhs = new BigDecimal("0");
             case LHS:
                 StringBuilder oldlhs = new StringBuilder(this.lhs.toString());
                 StringBuilder newlhs = new StringBuilder(oldlhs);
@@ -266,6 +324,8 @@ public class DefaultModel extends AbstractModel {
                     setRhs(new BigDecimal(newrhs.toString()));
                 }
                 break;
+            default:
+                Log.i(TAG, "Setting Buffer on State Error");
         }
         
         //firePropertyChange(DefaultController.ELEMENT_BUFFER, oldDigit, newDigit);
@@ -274,14 +334,27 @@ public class DefaultModel extends AbstractModel {
 
     public void setResult(BigDecimal newResult) {
 
-        //should only have to worry about PLUS, MINUS, MULTIPLY, or DIVIDE
+        if (newResult.toString().contains(".")) {
+            if (newResult.toString().length() <= 13) {
+                BigDecimal oldResult = this.result;
+                this.result = newResult;
 
-        BigDecimal oldResult = this.result;
-        this.result = newResult;
+                Log.i(TAG, "Result Change: From " + oldResult + " to " + newResult);
 
-        Log.i(TAG, "Result Change: From " + oldResult + " to " + newResult);
+                firePropertyChange(DefaultController.ELEMENT_RESULT, oldResult, newResult);
+            }
+        }
+        else if (newResult.toString().length() <= 12) {
+            BigDecimal oldResult = this.result;
+            this.result = newResult;
 
-        firePropertyChange(DefaultController.ELEMENT_RESULT, oldResult, newResult);
+            Log.i(TAG, "Result Change: From " + oldResult + " to " + newResult);
+
+            firePropertyChange(DefaultController.ELEMENT_RESULT, oldResult, newResult);
+        }
+        else {
+            Log.i(TAG, "Cannot enter Result with more than 12 digits and a dot");
+        }
 
     }
 }

@@ -123,9 +123,7 @@ public class MainActivity extends AppCompatActivity implements AbstractView {
             Toast toast = Toast.makeText(binding.getRoot().getContext(), tag, Toast.LENGTH_SHORT);
             toast.show();
 
-            /* Implement algorithm to determine action here or in model
-            *
-            * Model would need to call other methods from within
+            /* Model would need to call other methods from within
             * (If number or dot, call change buffer to add digit
             *   add to either lhs or rhs
             *   (would check if dot is already contained if adding dot)
